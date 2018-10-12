@@ -4,5 +4,5 @@ trait Args {
   def isDebug: Boolean
   def pagerCommand: Option[String]
   def pathFilter: Option[String]
-  def printHelp: Option[String]
+  def params: Seq[String]
 }

@@ -5,5 +5,5 @@ The Silver Searcher Scala clone
 
 ``` bash
 bloop server
-bloop run ag4s --args '-G test'
+bloop run ag4s -- -G test blah
 ```

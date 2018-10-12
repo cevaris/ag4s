@@ -1,25 +1,15 @@
 package com.cevaris.ag4s
 
-import org.apache.commons.cli.{DefaultParser, Option, Options}
+import com.cevaris.ag4s.cli.CommonCliArgs
+import com.twitter.util.{Return, Throw}
 
 object Main extends App {
-  val parser = new DefaultParser
-  val opts = new Options()
-  opts.addOption("G", true, "filter by path")
-  opts.addOption("D", "debug")
-
-  val pager = Option
-    .builder(null)
-    .longOpt("pager")
-    .hasArg
-    .desc("pipe to user paging cli app")
-    .numberOfArgs(Option.UNLIMITED_VALUES)
-    .valueSeparator
-    .build
-  opts.addOption(pager)
-
-  val cmdLine = parser.parse(opts, args)
-
-  println("hello world", cmdLine.getArgs)
+  val parsedArgs = CommonCliArgs.parse(args) match {
+    case Return(results) => results
+    case Throw(t) =>
+      System.err.println(t.getMessage)
+      System.exit(-1)
+  }
+  println("hello world", parsedArgs)
   System.exit(0)
 }

@@ -8,7 +8,9 @@ object AppLogger {
 }
 
 trait AppLogger {
-  def info(message: Any*): Unit
+  def info(message: String): Unit
 
-  def error(throwable: Throwable, message: Any*): Unit
+  def error(message: String, throwable: Throwable): Unit
+
+  def error(message: String): Unit
 }

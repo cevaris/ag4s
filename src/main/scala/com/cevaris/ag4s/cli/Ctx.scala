@@ -16,8 +16,7 @@ object Ctx {
   private val opts = new Options()
 
   def parse(args: Array[String]): Try[Ctx] = {
-    logger.info("parsing stuff")
-    opts.addOption("v", "verbose")
+    opts.addOption("v", "verbose", false, "outputs debug info")
     opts.addOption("h", "help", false, "print help description")
     opts.addOption("G", true, "filter by path")
 
@@ -44,7 +43,12 @@ object Ctx {
         val query = params.head
         val paths = params.tail.flatMap { pathName: String =>
           val path: Path = Paths.get(pathName)
-          Some(path).filter(p => Files.exists(p))
+          if (Files.exists(path)) {
+            Some(path.toAbsolutePath)
+          } else {
+            logger.error(String.format("%s path does not exist", path.toString))
+            None
+          }
         }
 
         Ctx(

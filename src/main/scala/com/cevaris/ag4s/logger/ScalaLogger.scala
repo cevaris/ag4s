@@ -10,11 +10,12 @@ object ScalaLogger {
 }
 
 class ScalaLogger(logger: Logger) extends AppLogger {
-  override def info(message: Any*): Unit = {
-    logger.info(message.mkString(" "))
-  }
+  override def info(message: String): Unit =
+    logger.info(message)
 
-  override def error(t: Throwable, message: Any*): Unit = {
-    logger.error(message.mkString(" "), t)
-  }
+  override def error(message: String, throwable: Throwable): Unit =
+    logger.error(message, throwable)
+
+  override def error(message: String): Unit =
+    logger.error(message)
 }

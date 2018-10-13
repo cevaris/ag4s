@@ -1,8 +1,9 @@
 package com.cevaris.ag4s.cli
 
-trait Args {
+trait AppContext {
   def isDebug: Boolean
-  def pagerCommand: Option[String]
+
   def pathFilter: Option[String]
+
   def params: Seq[String]
 }

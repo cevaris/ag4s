@@ -3,31 +3,18 @@ package cli
 
 
 import com.twitter.util.{Return, Throw, Try}
-import org.apache.commons.cli
-import collection.JavaConverters._
 import org.apache.commons.cli.{CommandLine, DefaultParser, HelpFormatter, Options}
+import scala.collection.JavaConverters._
 
-object CommonCliArgs {
+object Ctx {
   private val parser = new DefaultParser
 
   private val opts = new Options()
 
-  def parse(args: Array[String]): Try[CommonCliArgs] = {
-    println(args.mkString(", "))
+  def parse(args: Array[String]): Try[Ctx] = {
     opts.addOption("v", "verbose")
     opts.addOption("h", "help", false, "print help description")
     opts.addOption("G", true, "filter by path")
-    opts.addOption(
-      cli.Option
-        .builder(null)
-        .longOpt("pager")
-        .hasArg
-        .desc("pipe to user paging cli app")
-        .numberOfArgs(cli.Option.UNLIMITED_VALUES)
-        .valueSeparator
-        .build
-    )
-
 
     Try(parser.parse(opts, args))
       .flatMap { cl =>
@@ -45,9 +32,8 @@ object CommonCliArgs {
         }
       }
       .map { cl =>
-        CommonCliArgs(
+        Ctx(
           isDebug = cl.hasOption("v"),
-          pagerCommand = optional(cl, "pager"),
           pathFilter = optional(cl, "G"),
           params = cl.getArgList.asScala
         )
@@ -67,16 +53,14 @@ object CommonCliArgs {
       } else {
         None
       }
-
     } else {
       default
     }
   }
 }
 
-case class CommonCliArgs(
+case class Ctx(
   isDebug: Boolean,
-  pagerCommand: Option[String],
   pathFilter: Option[String],
-  params: Seq[String],
-) extends Args
+  params: Seq[String]
+) extends AppContext

@@ -2,16 +2,21 @@ package com.cevaris.ag4s
 package cli
 
 
+import com.cevaris.ag4s.logger.AppLogger
 import com.twitter.util.{Return, Throw, Try}
+import java.nio.file.{Files, Path, Paths}
 import org.apache.commons.cli.{CommandLine, DefaultParser, HelpFormatter, Options}
 import scala.collection.JavaConverters._
 
 object Ctx {
+  private val logger = AppLogger.default[Ctx]
+
   private val parser = new DefaultParser
 
   private val opts = new Options()
 
   def parse(args: Array[String]): Try[Ctx] = {
+    logger.info("parsing stuff")
     opts.addOption("v", "verbose")
     opts.addOption("h", "help", false, "print help description")
     opts.addOption("G", true, "filter by path")
@@ -21,8 +26,10 @@ object Ctx {
         if (cl.hasOption("h")) {
           val formatter = new HelpFormatter
           formatter.printHelp("a4js", opts)
+          Throw(SuccessShutdown())
+        } else {
+          Return(cl)
         }
-        Return(cl)
       }
       .flatMap { cl =>
         if (cl.getArgList.isEmpty) {
@@ -32,10 +39,19 @@ object Ctx {
         }
       }
       .map { cl =>
+        val params = cl.getArgList.asScala
+        // validated above
+        val query = params.head
+        val paths = params.tail.flatMap { pathName: String =>
+          val path: Path = Paths.get(pathName)
+          Some(path).filter(p => Files.exists(p))
+        }
+
         Ctx(
           isDebug = cl.hasOption("v"),
           pathFilter = optional(cl, "G"),
-          params = cl.getArgList.asScala
+          paths = paths,
+          query = query
         )
       }
 
@@ -62,5 +78,6 @@ object Ctx {
 case class Ctx(
   isDebug: Boolean,
   pathFilter: Option[String],
-  params: Seq[String]
+  paths: Seq[Path],
+  query: String
 ) extends AppContext

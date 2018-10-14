@@ -6,6 +6,8 @@ import scala.collection.mutable
 
 class PathMatcher(ctx: AppContext) {
 
+  val nullChar = 0x00
+
   def matchPath(path: Path): Seq[PathMatch] = {
     var lineNo = 0 // lines are 1-indexed
     PathReader(path)
@@ -13,6 +15,9 @@ class PathMatcher(ctx: AppContext) {
         lineNo += 1
 
         if (line.length > ctx.maxLineLen) {
+          acc
+        }
+        else if (line.indexOf(nullChar) > 0) {
           acc
         } else {
           val builder = mutable.Seq.newBuilder[LineMatch]

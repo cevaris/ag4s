@@ -4,6 +4,8 @@ Scala based recursive search CLI app
 - Recursive file search
 - Filter search to specific paths
 - Pretty printing of search results
+- Ignores most binary files
+  - Anything with NUL or 0x00 byte in the file is considered binary
 
 TODO
 - [Concurrent file reading](https://geoff.greer.fm/2012/09/07/the-silver-searcher-adding-pthreads/)

@@ -3,7 +3,7 @@ package cli
 
 import com.cevaris.ag4s.logger.AppLogger
 import java.nio.file.Path
-import java.util.regex.Pattern
+import scala.util.matching.Regex
 
 trait AppContext {
   def isDebug: Boolean
@@ -12,7 +12,7 @@ trait AppContext {
 
   def paths: Seq[Path]
 
-  def query: Pattern
+  def query: Regex
 
   // TODO: Move app logger out of AppContext;
   // https://stackoverflow.com/questions/18102898/how-can-i-change-log-level-of-single-logger-in-runtime

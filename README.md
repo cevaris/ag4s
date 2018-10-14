@@ -6,6 +6,7 @@ Scala based recursive search CLI app
 
 
 TODO
+- Pretty printing of search results
 - [Concurrent file reading](https://geoff.greer.fm/2012/09/07/the-silver-searcher-adding-pthreads/)
 - Ignore simple gitignore files
 - Case insensitive search

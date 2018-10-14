@@ -7,6 +7,7 @@ import java.nio.file.{FileSystems, Files, Path, Paths}
 import java.util.regex.Pattern
 import org.apache.commons.cli.{CommandLine, DefaultParser, HelpFormatter, Options}
 import scala.collection.JavaConverters._
+import scala.util.matching.Regex
 
 object Ctx {
   private val parser = new DefaultParser
@@ -67,7 +68,7 @@ object Ctx {
           logger = logger,
           pathFilter = optional(cl, "G"),
           paths = updatePaths,
-          query = Pattern.compile(query)
+          query = new Regex(query)
         )
       }
 
@@ -96,5 +97,5 @@ case class Ctx(
   logger: AppLogger,
   pathFilter: Option[String],
   paths: Seq[Path],
-  query: Pattern
+  query: Regex
 ) extends AppContext

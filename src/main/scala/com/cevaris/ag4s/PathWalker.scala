@@ -44,9 +44,9 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
 
     ctx.logger.debug(s"walker-match - $file")
     futurePool {
-      val pathMatches = pathMatcher.matchPath(file)
-      if (pathMatches.nonEmpty) {
-        ctx.logger.info(PathMatches.pprint(ctx, file, pathMatches))
+      val pathMatch = pathMatcher.matchPath(file)
+      if (pathMatch.matches.nonEmpty) {
+        ctx.logger.info(PathMatches.pprint(ctx, file, pathMatch))
       }
     }
 

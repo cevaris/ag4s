@@ -16,7 +16,7 @@ object Main extends App {
     case Return(ctx) =>
       ctx.logger.debug(ctx.toString)
 
-      val walker = new FileWalker(ctx)
+      val walker = new PathWalker(ctx)
       ctx.paths.foreach { path =>
         Files.walkFileTree(path, walker)
       }

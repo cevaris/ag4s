@@ -6,7 +6,7 @@ import java.nio.file.{FileVisitResult, Path, SimpleFileVisitor}
 import scala.io.Source
 
 
-class FileWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
+class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
 
   override def preVisitDirectory(
     dir: Path,

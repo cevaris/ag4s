@@ -4,6 +4,7 @@ package cli
 import com.cevaris.ag4s.logger.{AppLogger, ScalaLogger}
 import com.twitter.util.{Return, Throw, Try}
 import java.nio.file.{FileSystems, Files, Path, Paths}
+import java.util.regex.Pattern
 import org.apache.commons.cli.{CommandLine, DefaultParser, HelpFormatter, Options}
 import scala.collection.JavaConverters._
 
@@ -34,6 +35,10 @@ object Ctx {
           Return(cl)
         }
       }
+      .flatMap { cl =>
+        Try(Pattern.compile(cl.getArgList.get(0)))
+          .map(_ => cl) // continue if valid regex parse
+      }
       .map { cl =>
         val isDebug = cl.hasOption("v")
         val logger = new ScalaLogger(isDebug)
@@ -62,7 +67,7 @@ object Ctx {
           logger = logger,
           pathFilter = optional(cl, "G"),
           paths = updatePaths,
-          query = query
+          query = Pattern.compile(query)
         )
       }
 
@@ -91,5 +96,5 @@ case class Ctx(
   logger: AppLogger,
   pathFilter: Option[String],
   paths: Seq[Path],
-  query: String
+  query: Pattern
 ) extends AppContext

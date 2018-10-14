@@ -1,7 +1,7 @@
 package com.cevaris.ag4s
 
 import com.cevaris.ag4s.cli.Ctx
-import com.twitter.util.{Return, Throw}
+import com.twitter.util.{Await, Return, Throw}
 import java.nio.file.Files
 
 trait ShutdownException extends RuntimeException {

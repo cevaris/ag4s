@@ -1,13 +1,25 @@
 package com.cevaris.ag4s
 
 import com.cevaris.ag4s.cli.AppContext
+import com.twitter.concurrent.NamedPoolThreadFactory
+import com.twitter.util.FuturePool
 import java.nio.file.attribute.BasicFileAttributes
 import java.nio.file.{FileVisitResult, Path, SimpleFileVisitor}
+import java.util.concurrent.{SynchronousQueue, ThreadPoolExecutor, TimeUnit}
 import scala.io.Source
-
 
 class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
   private val pathMatcher = new PathMatcher(ctx)
+  private val futurePool = FuturePool(
+    new ThreadPoolExecutor(
+      0,
+      Const.cores - 1,
+      60L,
+      TimeUnit.SECONDS,
+      new SynchronousQueue[Runnable](),
+      new NamedPoolThreadFactory("arg4s", makeDaemons = true)
+    )
+  )
 
   override def preVisitDirectory(
     dir: Path,
@@ -30,11 +42,12 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
       return FileVisitResult.SKIP_SUBTREE
     }
 
-
     ctx.logger.debug(s"walker-match - $file")
-    val pathMatches = pathMatcher.matchPath(file)
-    if (pathMatches.nonEmpty) {
-      ctx.logger.info(PathMatches.pprint(ctx, file, pathMatches))
+    futurePool {
+      val pathMatches = pathMatcher.matchPath(file)
+      if (pathMatches.nonEmpty) {
+        ctx.logger.info(PathMatches.pprint(ctx, file, pathMatches))
+      }
     }
 
     FileVisitResult.CONTINUE
@@ -51,4 +64,5 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
       .filter(_.nonEmpty) // ignore blank lines
     ctx.logger.debug(s"gitignore - $content")
   }
+
 }

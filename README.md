@@ -4,18 +4,17 @@ Scala based recursive search CLI app
 - Recursive file search
 - Filter search to specific paths
 - Pretty printing of search results
-- Ignores most binary files
+- Makes attempt at ignoring binary files
   - Anything with NUL or 0x00 byte in the file is considered binary
+- [Concurrent file reading]
+  - Makes use of [com.twitter.util.FuturePool](https://github.com/twitter/util/blob/master/util-core/src/main/scala/com/twitter/util/FuturePool.scala#L47) 
 
 TODO
-- [Concurrent file reading](https://geoff.greer.fm/2012/09/07/the-silver-searcher-adding-pthreads/)
 - Ignore simple gitignore files
 - Case insensitive search
 - See if re2/j regex is faster
 - Proper benchmarks
-- Binary file detection
 - Support STDIN pipe
-
 
 ## 
 ```bash

@@ -6,9 +6,8 @@ Scala based recursive search CLI app
 
 
 TODO
-- Concurrent file reading
+- [Concurrent file reading](https://geoff.greer.fm/2012/09/07/the-silver-searcher-adding-pthreads/)
 - Ignore simple gitignore files
--- https://geoff.greer.fm/2012/09/07/the-silver-searcher-adding-pthreads/
 - Case insensitive search
 - See if re2/j regex is faster
 - Proper benchmarks

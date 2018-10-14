@@ -1,4 +1,5 @@
-package com.cevaris.ag4s.cli
+package com.cevaris.ag4s
+package cli
 
 import com.cevaris.ag4s.logger.AppLogger
 import java.nio.file.Path

@@ -1,4 +1,5 @@
-package com.cevaris.ag4s.logger
+package com.cevaris.ag4s
+package logger
 
 import com.typesafe.scalalogging.Logger
 

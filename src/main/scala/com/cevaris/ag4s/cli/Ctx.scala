@@ -1,7 +1,6 @@
 package com.cevaris.ag4s
 package cli
 
-
 import com.cevaris.ag4s.logger.{AppLogger, ScalaLogger}
 import com.twitter.util.{Return, Throw, Try}
 import java.nio.file.{FileSystems, Files, Path, Paths}

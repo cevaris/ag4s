@@ -1,5 +1,5 @@
-package com.cevaris.ag4s.logger
-
+package com.cevaris.ag4s
+package logger
 
 trait AppLogger {
   def debug(message: String): Unit

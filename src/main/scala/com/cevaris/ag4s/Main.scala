@@ -1,7 +1,7 @@
 package com.cevaris.ag4s
 
 import com.cevaris.ag4s.cli.Ctx
-import com.twitter.util.{Await, Return, Throw}
+import com.twitter.util.{Return, Throw}
 import java.nio.file.Files
 
 trait ShutdownException extends RuntimeException {
@@ -20,6 +20,7 @@ object Main extends App {
       ctx.paths.foreach { path =>
         Files.walkFileTree(path, walker)
       }
+      walker.waitFor()
 
     case Throw(t: ShutdownException) =>
       System.exit(t.exitCode)

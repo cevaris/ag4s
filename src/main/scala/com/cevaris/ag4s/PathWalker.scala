@@ -65,4 +65,13 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
     ctx.logger.debug(s"gitignore - $content")
   }
 
+  /**
+   * Wait for any still running Futures
+   */
+  def waitFor(): Unit = {
+    while(futurePool.numActiveTasks>0){
+      Thread.sleep(10)
+    }
+  }
+
 }

@@ -9,20 +9,25 @@ class PathMatcher(ctx: AppContext) {
   def matchPath(path: Path): Seq[PathMatch] = {
     var lineNo = 0 // lines are 1-indexed
     PathReader(path)
-      .foldLeft(Seq.empty[Seq[PathMatch]]) { case (acc, line) =>
+      .foldLeft(Seq.empty[PathMatch]) { case (acc, line) =>
         lineNo += 1
 
-        val builder = mutable.Seq.newBuilder[PathMatch]
+        val builder = mutable.Seq.newBuilder[LineMatch]
         for (m <- ctx.query.findAllIn(line).matchData) {
-          builder += PathMatch(
-            line,
+          builder += LineMatch(
             m.start,
             m.end,
             lineNo
           )
         }
-        acc :+ builder.result()
+
+        // only add match if there was at least one line match
+        val tmp = builder.result()
+        if (tmp.isEmpty) {
+          acc
+        } else {
+          acc :+ PathMatch(line, builder.result())
+        }
       }
-      .flatten
   }
 }

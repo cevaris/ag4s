@@ -3,10 +3,9 @@ Scala based recursive search CLI app
 
 - Recursive file search
 - Filter search to specific paths
-
+- Pretty printing of search results
 
 TODO
-- Pretty printing of search results
 - [Concurrent file reading](https://geoff.greer.fm/2012/09/07/the-silver-searcher-adding-pthreads/)
 - Ignore simple gitignore files
 - Case insensitive search

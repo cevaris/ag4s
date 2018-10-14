@@ -33,17 +33,19 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
 
 
     ctx.logger.debug(s"walker-match - $file")
-    val matches = pathMatcher.matchPath(file)
-    if (matches.nonEmpty) {
-      ctx.logger.info(file.toString)
-      matches.foreach { line =>
-        val content = "%5d: [%2d,%2d] %s".format(
-          line.lineNo,
-          line.start,
-          line.end,
-          line.line
-        )
-        ctx.logger.info(content)
+    val pathMatches = pathMatcher.matchPath(file)
+    if (pathMatches.nonEmpty) {
+      ctx.logger.info(Text.Green(file.toString))
+      pathMatches.foreach { pathMatch =>
+        pathMatch.matches.foreach { lineMatch: LineMatch =>
+          val content = "%5s: [%2s,%2s] %s".format(
+            Text.Yellow(lineMatch.lineNo.toString),
+            Text.Green(lineMatch.start.toString),
+            Text.Green(lineMatch.end.toString),
+            pathMatch.line
+          )
+          ctx.logger.info(content)
+        }
       }
     }
 

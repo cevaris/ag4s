@@ -7,6 +7,8 @@ import com.twitter.util.{Return, Throw, Try}
 import java.nio.file.{Files, Path, Paths}
 import org.apache.commons.cli.{CommandLine, DefaultParser, HelpFormatter, Options}
 import scala.collection.JavaConverters._
+import java.nio.file.FileSystems
+import java.nio.file.Path
 
 object Ctx {
   private val logger = AppLogger.default[Ctx]
@@ -44,17 +46,23 @@ object Ctx {
         val paths = params.tail.flatMap { pathName: String =>
           val path: Path = Paths.get(pathName)
           if (Files.exists(path)) {
-            Some(path.toAbsolutePath)
+            Some(path.toAbsolutePath.normalize())
           } else {
             logger.error(String.format("%s path does not exist", path.toString))
             None
           }
         }
+        // assign current working directory if non provided
+        val updatePaths = if (paths.isEmpty) {
+          Seq(FileSystems.getDefault.getPath(".").toAbsolutePath.normalize())
+        } else {
+          paths
+        }
 
         Ctx(
           isDebug = cl.hasOption("v"),
           pathFilter = optional(cl, "G"),
-          paths = paths,
+          paths = updatePaths,
           query = query
         )
       }

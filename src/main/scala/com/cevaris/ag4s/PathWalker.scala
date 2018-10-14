@@ -38,12 +38,10 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
       ctx.logger.info(Text.Green(file.toString))
       pathMatches.foreach { pathMatch =>
         pathMatch.matches.foreach { lineMatch: LineMatch =>
-          val content = "%5s: [%2s,%2s] %s".format(
-            Text.Yellow(lineMatch.lineNo.toString),
-            Text.Green(lineMatch.start.toString),
-            Text.Green(lineMatch.end.toString),
-            pathMatch.line
-          )
+          val lineNumber = "%5d".format(lineMatch.lineNo)
+          val lineRegion = "[%5d,%5d]".format(lineMatch.start, lineMatch.end)
+
+          val content = s"${Text.Yellow(lineNumber)}: ${Text.Green(lineRegion)} ${pathMatch.line}"
           ctx.logger.info(content)
         }
       }

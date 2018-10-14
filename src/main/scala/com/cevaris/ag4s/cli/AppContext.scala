@@ -6,6 +6,8 @@ import java.nio.file.Path
 import scala.util.matching.Regex
 
 trait AppContext {
+  def maxLineLen: Int
+
   def isDebug: Boolean
 
   def pathFilter: Option[String]

@@ -98,4 +98,6 @@ case class Ctx(
   pathFilter: Option[String],
   paths: Seq[Path],
   query: Regex
-) extends AppContext
+) extends AppContext {
+  override def maxLineLen: Int = 1000
+}

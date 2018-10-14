@@ -33,13 +33,12 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
     attrs: BasicFileAttributes
   ): FileVisitResult = {
     if (ctx.pathFilter.isDefined && !file.toString.contains(ctx.pathFilter.get)) {
-      ctx.logger.debug(s"skip - $file does not match ${ ctx.pathFilter.get }")
+      ctx.logger.debug(s"skip - $file does not match ${ctx.pathFilter.get}")
       return FileVisitResult.SKIP_SUBTREE
     }
 
     if (file.endsWith(".gitignore")) {
       visitGitignore(file)
-      return FileVisitResult.SKIP_SUBTREE
     }
 
     ctx.logger.debug(s"walker-match - $file")
@@ -53,10 +52,10 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
     FileVisitResult.CONTINUE
   }
 
-
   // TODO: read and include
   private def visitGitignore(file: Path): Unit = {
-    val content = Source.fromFile(file.toFile)
+    val content = Source
+      .fromFile(file.toFile)
       .getLines()
       .toList
       .map(_.trim)
@@ -69,7 +68,7 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
    * Wait for any still running Futures
    */
   def waitFor(): Unit = {
-    while(futurePool.numActiveTasks>0){
+    while (futurePool.numActiveTasks > 0) {
       Thread.sleep(10)
     }
   }

@@ -7,7 +7,6 @@ import scala.io.Source
 
 
 class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
-
   private val pathMatcher = new PathMatcher(ctx)
 
   override def preVisitDirectory(
@@ -35,16 +34,7 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
     ctx.logger.debug(s"walker-match - $file")
     val pathMatches = pathMatcher.matchPath(file)
     if (pathMatches.nonEmpty) {
-      ctx.logger.info(Text.Green(file.toString))
-      pathMatches.foreach { pathMatch =>
-        pathMatch.matches.foreach { lineMatch: LineMatch =>
-          val lineNumber = "%5d".format(lineMatch.lineNo)
-          val lineRegion = "[%5d,%5d]".format(lineMatch.start, lineMatch.end)
-
-          val content = s"${Text.Yellow(lineNumber)}: ${Text.Green(lineRegion)} ${pathMatch.line}"
-          ctx.logger.info(content)
-        }
-      }
+      ctx.logger.info(PathMatches.pprint(ctx, file, pathMatches))
     }
 
     FileVisitResult.CONTINUE

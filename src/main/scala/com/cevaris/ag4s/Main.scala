@@ -12,7 +12,7 @@ case class SuccessShutdown(override val exitCode: Int = 0) extends ShutdownExcep
 
 object Main extends App {
 
-  Ctx.parse(args) match {
+  Ctx(args) match {
     case Return(ctx) =>
       ctx.logger.debug(ctx.toString)
 

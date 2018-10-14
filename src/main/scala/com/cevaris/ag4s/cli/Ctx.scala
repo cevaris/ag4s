@@ -11,41 +11,24 @@ import scala.util.matching.Regex
 
 object Ctx {
   private val parser = new DefaultParser
+  private val options = new Options()
 
-  private val opts = new Options()
+  def apply(args: Array[String]): Try[Ctx] = {
+    options.addOption("v", "verbose", false, "outputs debug info")
+    options.addOption("h", "help", false, "print help description")
+    options.addOption("G", true, "filter by path")
 
-  def parse(args: Array[String]): Try[Ctx] = {
-    opts.addOption("v", "verbose", false, "outputs debug info")
-    opts.addOption("h", "help", false, "print help description")
-    opts.addOption("G", true, "filter by path")
-
-    Try(parser.parse(opts, args))
-      .flatMap { cl =>
-        if (cl.hasOption("h")) {
-          val formatter = new HelpFormatter
-          formatter.printHelp("a4js", opts)
-          Throw(SuccessShutdown())
-        } else {
-          Return(cl)
-        }
-      }
-      .flatMap { cl =>
-        if (cl.getArgList.isEmpty) {
-          Throw(new IllegalArgumentException("err: no search params provided"))
-        } else {
-          Return(cl)
-        }
-      }
-      .flatMap { cl =>
-        Try(Pattern.compile(cl.getArgList.get(0)))
-          .map(_ => cl) // continue if valid regex parse
-      }
+    Try(parser.parse(options, args))
+      .flatMap(helpEffect)
+      .flatMap(validSearchParamEffect)
       .map { cl =>
         val isDebug = cl.hasOption("v")
         val logger = new ScalaLogger(isDebug)
 
         val params = cl.getArgList.asScala
-        // validated above
+        /**
+         * Params validated by [[Ctx.validSearchParamEffect]]
+         */
         val query = params.head
         val paths = params.tail.flatMap { pathName: String =>
           val path: Path = Paths.get(pathName)
@@ -56,7 +39,7 @@ object Ctx {
             None
           }
         }
-        // assign current working directory if non provided
+        // assign current working directory if no paths provided
         val updatePaths = if (paths.isEmpty) {
           Seq(FileSystems.getDefault.getPath(".").toAbsolutePath.normalize())
         } else {
@@ -90,6 +73,30 @@ object Ctx {
       default
     }
   }
+
+  // Validators
+
+  type InputEffect = CommandLine => Try[CommandLine]
+
+  private val helpEffect: InputEffect = { cl =>
+    if (cl.hasOption("h")) {
+      val formatter = new HelpFormatter
+      formatter.printHelp("a4js", options)
+      Throw(SuccessShutdown())
+    } else {
+      Return(cl)
+    }
+  }
+
+  private val validSearchParamEffect: InputEffect = { cl =>
+    if (cl.getArgList.isEmpty) {
+      Throw(new IllegalArgumentException("no search params provided"))
+    } else {
+      Try(Pattern.compile(cl.getArgList.get(0)))
+        .map(_ => cl)
+    }
+  }
+
 }
 
 case class Ctx(

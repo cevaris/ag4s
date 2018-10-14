@@ -5,9 +5,6 @@ import java.nio.file.Path
 import scala.collection.mutable
 
 class PathMatcher(ctx: AppContext) {
-
-  val nullChar = 0x00
-
   def matchPath(path: Path): Seq[PathMatch] = {
     var lineNo = 0 // lines are 1-indexed
     PathReader(path)
@@ -17,7 +14,7 @@ class PathMatcher(ctx: AppContext) {
         if (line.length > ctx.maxLineLen) {
           acc
         }
-        else if (line.indexOf(nullChar) > 0) {
+        else if (line.indexOf(Const.nullChar) > 0) {
           return acc // stop searching file
         } else {
           val builder = mutable.Seq.newBuilder[LineMatch]

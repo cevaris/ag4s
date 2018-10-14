@@ -18,7 +18,7 @@ class PathMatcher(ctx: AppContext) {
           acc
         }
         else if (line.indexOf(nullChar) > 0) {
-          acc
+          return acc // stop searching file
         } else {
           val builder = mutable.Seq.newBuilder[LineMatch]
           for (m <- ctx.query.findAllIn(line).matchData) {

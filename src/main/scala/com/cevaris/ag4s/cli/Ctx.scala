@@ -2,17 +2,13 @@ package com.cevaris.ag4s
 package cli
 
 
-import com.cevaris.ag4s.logger.AppLogger
+import com.cevaris.ag4s.logger.{AppLogger, ScalaLogger}
 import com.twitter.util.{Return, Throw, Try}
-import java.nio.file.{Files, Path, Paths}
+import java.nio.file.{FileSystems, Files, Path, Paths}
 import org.apache.commons.cli.{CommandLine, DefaultParser, HelpFormatter, Options}
 import scala.collection.JavaConverters._
-import java.nio.file.FileSystems
-import java.nio.file.Path
 
 object Ctx {
-  private val logger = AppLogger.default[Ctx]
-
   private val parser = new DefaultParser
 
   private val opts = new Options()
@@ -40,6 +36,9 @@ object Ctx {
         }
       }
       .map { cl =>
+        val isDebug = cl.hasOption("v")
+        val logger = new ScalaLogger(isDebug)
+
         val params = cl.getArgList.asScala
         // validated above
         val query = params.head
@@ -60,7 +59,8 @@ object Ctx {
         }
 
         Ctx(
-          isDebug = cl.hasOption("v"),
+          isDebug = isDebug,
+          logger = logger,
           pathFilter = optional(cl, "G"),
           paths = updatePaths,
           query = query
@@ -89,6 +89,7 @@ object Ctx {
 
 case class Ctx(
   isDebug: Boolean,
+  logger: AppLogger,
   pathFilter: Option[String],
   paths: Seq[Path],
   query: String

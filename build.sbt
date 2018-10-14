@@ -16,3 +16,7 @@ libraryDependencies ++= Seq(
 
 // Bloop config https://scalacenter.github.io/bloop/docs/
 bloopAggregateSourceDependencies in Global := true
+
+// For fast CLI startup http://www.scala-native.org/en/v0.3.8/user/sbt.html
+// Cannot enable this unless we ditch twitter/cli libs.
+//enablePlugins(ScalaNativePlugin)

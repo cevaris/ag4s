@@ -8,6 +8,8 @@ import scala.io.Source
 
 class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
 
+  private val pathMatcher = new PathMatcher(ctx)
+
   override def preVisitDirectory(
     dir: Path,
     attrs: BasicFileAttributes
@@ -29,7 +31,14 @@ class PathWalker(ctx: AppContext) extends SimpleFileVisitor[Path] {
       return FileVisitResult.SKIP_SUBTREE
     }
 
-    ctx.logger.debug(s"match - $file")
+
+    ctx.logger.debug(s"walker-match - $file")
+    val matches = pathMatcher.matchPath(file)
+    if (matches.nonEmpty) {
+      ctx.logger.info(file.toString)
+      matches.foreach(ctx.logger.info)
+    }
+
     FileVisitResult.CONTINUE
   }
 

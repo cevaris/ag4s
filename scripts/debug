@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+cd $(git rev-parse --show-toplevel)
+
+JAVA_TOOL_OPTIONS='-agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=5005' bloop run ag4s -- $@ | less

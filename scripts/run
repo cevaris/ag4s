@@ -2,4 +2,5 @@
 
 cd $(git rev-parse --show-toplevel)
 
+
 bloop run ag4s -- $@ | less

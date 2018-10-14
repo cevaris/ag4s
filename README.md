@@ -1,5 +1,5 @@
 # ag4s
-The Silver Searcher Scala clone
+Scala based recursive search CLI app
 
 - Recursive file search
 - Filter search to specific paths
@@ -13,7 +13,7 @@ TODO
 - See if re2/j regex is faster
 - Proper benchmarks
 - Binary file detection
-
+- Support STDIN pipe
 
 
 ## 
